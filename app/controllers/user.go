@@ -38,5 +38,11 @@ func (c User) SignUp() revel.Result {
 		return c.RenderText("Error")
 	}
 
+	err = mgm.Coll(&registerUser).Create(&registerUser)
+	if err != nil {
+		c.Response.SetStatus(http.StatusInternalServerError)
+		return c.RenderText("Internal Server  Error")
+	}
+
 	return c.RenderJSON(registerUser)
 }
