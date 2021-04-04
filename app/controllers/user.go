@@ -4,8 +4,17 @@ import (
 	"go-revel-web-api/app/models"
 	"net/http"
 
+	"github.com/kamva/mgm/v3"
 	"github.com/revel/revel"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+func init() {
+	err := mgm.SetDefaultConfig(nil, "nextflow", options.Client().ApplyURI("mongodb://localhost:27017"))
+	if err != nil {
+		panic(err)
+	}
+}
 
 type User struct {
 	*revel.Controller
