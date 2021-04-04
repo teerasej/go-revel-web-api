@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"go-revel-web-api/app/models"
+	"go-revel-web-api/app/utils"
 	"net/http"
 
 	"github.com/kamva/mgm/v3"
 	"github.com/revel/revel"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -25,7 +27,37 @@ func (c User) Index() revel.Result {
 }
 
 func (c User) Login() revel.Result {
-	return c.RenderText("Login")
+
+	var loginUser models.UserModel
+
+	err := c.Params.BindJSON(&loginUser)
+	if err != nil {
+		c.Response.SetStatus(http.StatusBadRequest)
+		return c.RenderText("Error")
+	}
+
+	var existUsers []models.UserModel
+	collection := mgm.Coll(&models.UserModel{})
+	err = collection.SimpleFind(&existUsers, bson.M{"email": loginUser.Email, "password": loginUser.Password})
+
+	if err != nil {
+		c.Response.SetStatus(http.StatusInternalServerError)
+		return c.RenderText("Database error")
+	}
+
+	if len(existUsers) == 0 {
+		c.Response.SetStatus(http.StatusUnauthorized)
+		return c.RenderText("login failed")
+	}
+
+	loggedInUser := existUsers[0]
+	token := utils.EncodeToken(loggedInUser.Email)
+
+	tokenModel := models.TokenModel{
+		Token: token,
+	}
+
+	return c.RenderJSON(tokenModel)
 }
 
 func (c User) SignUp() revel.Result {
