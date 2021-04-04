@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"go-revel-web-api/app/models"
+	"net/http"
+
 	"github.com/revel/revel"
 )
 
@@ -17,5 +20,14 @@ func (c User) Login() revel.Result {
 }
 
 func (c User) SignUp() revel.Result {
-	return c.RenderText("Sign up")
+
+	var registerUser models.UserModel
+
+	err := c.Params.BindJSON(&registerUser)
+	if err != nil {
+		c.Response.SetStatus(http.StatusBadRequest)
+		return c.RenderText("Error")
+	}
+
+	return c.RenderJSON(registerUser)
 }
