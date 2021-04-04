@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/garyburd/redigo v1.6.2 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/kamva/mgm/v3 v3.1.0 // indirect
