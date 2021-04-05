@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"fmt"
 	"go-revel-web-api/app/models"
 	"go-revel-web-api/app/utils"
 	"net/http"
+	"strings"
 
 	"github.com/kamva/mgm/v3"
 	"github.com/revel/revel"
@@ -80,6 +82,21 @@ func (c User) SignUp() revel.Result {
 }
 
 func (c User) GetProfile() revel.Result {
+
+	authHeader := c.Request.Header.Get("Authorization")
+	if authHeader == "" {
+		c.Response.SetStatus(http.StatusUnauthorized)
+		return c.RenderText("token not found")
+	}
+
+	tokenSlice := strings.Split(authHeader, " ")
+	if len(tokenSlice) != 2 {
+		c.Response.SetStatus(http.StatusUnauthorized)
+		return c.RenderText("token not found")
+	}
+
+	tokenString := tokenSlice[1]
+	fmt.Println(tokenString)
 
 	return c.RenderText("Getting in secret path")
 
