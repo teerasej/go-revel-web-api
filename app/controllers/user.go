@@ -78,3 +78,9 @@ func (c User) SignUp() revel.Result {
 
 	return c.RenderJSON(registerUser)
 }
+
+func (c User) GetProfile() revel.Result {
+
+	return c.RenderText("Getting in secret path")
+
+}
